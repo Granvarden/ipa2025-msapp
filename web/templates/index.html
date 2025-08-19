@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>Sample app</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <h1>Register Router</h1>
+    <form method="POST" action="/add" class="form-grid">
+        <label>
+          Router IP
+          <input name="ip" placeholder="192.168.1.1" required />
+        </label>
+        <label>
+          Username
+          <input name="username" placeholder="admin" required />
+        </label>
+        <label>
+          Password
+          <input name="password" type="password" placeholder="••••••••" required />
+        </label>
+        <button type="submit">add</button>
+      </form>
+
+  <ul>
+    {% for it in items %}
+          <tr>
+            <td>{{ it.ip }}</td>
+            <td>{{ it.username }}</td>
+            <td>{{ it.password }}</td>
+            <td>
+              <form method="POST" action="/delete">
+                <input type="hidden" name="id" value="{{ it._id }}" />
+                <button type="submit" class="danger">delete</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" style="text-align:center;">No data yet</td>
+          </tr>
+          {% endfor %}
+  </ul>
+
+</body>
+</html>
