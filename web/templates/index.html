@@ -16,7 +16,7 @@
         </label>
         <label>
           Password
-          <input name="password" type="password" placeholder="••••••••" required />
+          <input name="password" placeholder="••••••••" required />
         </label>
         <button type="submit">add</button>
       </form>
@@ -28,7 +28,7 @@
             <td>{{ it.username }}</td>
             <td>{{ it.password }}</td>
             <td>
-              <form method="POST" action="/delete">
+              <form method="POST" action="/delete" style="display: inline;">
                 <input type="hidden" name="id" value="{{ it._id }}" />
                 <button type="submit" class="danger">delete</button>
               </form>

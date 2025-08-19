@@ -35,8 +35,6 @@ def delete_router():
     rid = request.form.get("id")
     try:
         mycol.delete_one({"_id": ObjectId(rid)})
-        if 0 <= idx < len(data):
-            data.pop(idx)
     except Exception:
         pass
     return redirect(url_for("main"))
