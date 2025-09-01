@@ -1,44 +1,40 @@
-from flask import Flask
-from flask import request
-from flask import render_template
-from flask import redirect
-from flask import url_for
+import os
+
+from flask import Flask, request, render_template, redirect
 from pymongo import MongoClient
-from bson.objectid import ObjectId
+from bson import ObjectId
 
-sample = Flask(__name__)
+app = Flask(__name__)
 
-client = MongoClient("mongodb://mongo:27017/")
-mydb = client["router"]
-mycol = mydb["my_router_collection"]
+mongo_uri  = os.environ.get("MONGO_URI")
+db_name    = os.environ.get("DB_NAME")
 
+client = MongoClient(mongo_uri)
+db = client[db_name]
+routers = db["routers"]
 
-@sample.route("/")
-def main():
-    items = list(mycol.find({}))
-    return render_template("index.html", items=items)
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("index.html", routers=list(routers.find()))
 
-@sample.route("/add", methods=["POST"])
+@app.route("/add", methods=["POST"])
 def add_router():
-    ip = request.form.get("ip", "").strip()
-    username = request.form.get("username", "").strip()
-    password = request.form.get("password", "").strip()
-
+    ip = request.form.get("ip")
+    username = request.form.get("username")
+    password = request.form.get("password")
 
     if ip and username and password:
-    
-        mycol.insert_one({"ip": ip, "username": username, "password": password})
-    return redirect(url_for("main"))
+        routers.insert_one({
+            "ip": ip,
+            "username": username,
+            "password": password
+        })
+    return redirect("/")
 
-@sample.route("/delete", methods=["POST"])
-def delete_router():
-    rid = request.form.get("id")
-    try:
-        mycol.delete_one({"_id": ObjectId(rid)})
-    except Exception:
-        pass
-    return redirect(url_for("main"))
+@app.route("/delete/<id>", methods=["POST"])
+def delete_router(id):
+    routers.delete_one({"_id": ObjectId(id)})
+    return redirect("/")
 
 if __name__ == "__main__":
-    sample.run(host="0.0.0.0", port=8080)
-
+    app.run(debug=True, host="0.0.0.0", port=8080)

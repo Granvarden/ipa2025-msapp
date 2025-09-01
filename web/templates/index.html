@@ -1,45 +1,59 @@
+<!doctype html>
 <html>
 <head>
-    <title>Sample app</title>
-    <link rel="stylesheet" href="/static/style.css" />
+  <meta charset="utf-8" />
+  <title>Sample app</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-    <h1>Register Router</h1>
-    <form method="POST" action="/add" class="form-grid">
-        <label>
-          Router IP
-          <input name="ip" placeholder="192.168.1.1" required />
-        </label>
-        <label>
-          Username
-          <input name="username" placeholder="admin" required />
-        </label>
-        <label>
-          Password
-          <input name="password" placeholder="••••••••" required />
-        </label>
-        <button type="submit">add</button>
-      </form>
+  <h1>Register Router</h1>
 
-  <ul>
-    {% for it in items %}
-          <tr>
-            <td>{{ it.ip }}</td>
-            <td>{{ it.username }}</td>
-            <td>{{ it.password }}</td>
-            <td>
-              <form method="POST" action="/delete" style="display: inline;">
-                <input type="hidden" name="id" value="{{ it._id }}" />
-                <button type="submit" class="danger">delete</button>
-              </form>
-            </td>
-          </tr>
-          {% else %}
-          <tr>
-            <td colspan="4" style="text-align:center;">No data yet</td>
-          </tr>
-          {% endfor %}
-  </ul>
+  <form method="POST" action="/add" class="form-grid">
+    <label>
+      Router IP
+      <input name="ip" placeholder="192.168.1.1" required />
+    </label>
+    <label>
+      Username
+      <input name="username" placeholder="admin" required />
+    </label>
+    <label>
+      Password
+      <input name="password" placeholder="••••••••" required />
+    </label>
+    <button type="submit">add</button>
+  </form>
 
+  <h2>Saved Routers</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>IP</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% if routers and routers|length > 0 %}
+      {% for it in routers %}
+      <tr>
+        <td>{{ it.ip }}</td>
+        <td>{{ it.username }}</td>
+        <td>{{ it.password }}</td>
+        <td>
+          <form method="POST" action="/delete/{{ it._id }}">
+            <button type="submit" class="danger">delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="4" style="text-align:center;">No data yet</td>
+      </tr>
+    {% endif %}
+    </tbody>
+  </table>
 </body>
 </html>
