@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Router {{ router_ip }} - Interfaces</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+    <h1>Router: {{ router_ip }}</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Interface</th>
+                <th>IP Address</th>
+                <th>Status</th>
+                <th>Protocol</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in interface_data %}
+            {% for intf in doc.interfaces %}
+            <tr>
+                <td>{{ doc.timestamp }}</td>
+                <td>{{ intf.interface }}</td>
+                <td>{{ intf.ip_address }}</td>
+                <td>{{ intf.status }}</td>
+                <td>{{ intf.proto }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

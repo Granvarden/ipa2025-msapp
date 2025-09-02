@@ -38,7 +38,7 @@
     {% if routers and routers|length > 0 %}
       {% for it in routers %}
       <tr>
-        <td>{{ it.ip }}</td>
+        <td><a href="/router/{{ it.ip }}" style="margin-left:8px;">{{ it.ip }}</a></td>
         <td>{{ it.username }}</td>
         <td>{{ it.password }}</td>
         <td>
