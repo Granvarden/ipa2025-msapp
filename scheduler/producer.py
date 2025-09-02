@@ -1,7 +1,12 @@
-import pika
+import pika, os
 
 def produce(host, body):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host))
+    rabbitmq_user = os.getenv("RABBITMQ_DEFAULT_USER")
+    rabbitmq_pass = os.getenv("RABBITMQ_DEFAULT_PASS")
+
+    credentials = pika.PlainCredentials(rabbitmq_user, rabbitmq_pass)
+    parameters = pika.ConnectionParameters(host, credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
     channel.exchange_declare(exchange="jobs", exchange_type="direct")

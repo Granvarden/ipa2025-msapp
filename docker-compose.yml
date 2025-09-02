@@ -24,6 +24,28 @@ services:
     env_file:
       - .env
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - app-net
+    env_file:
+      - .env
+  
+  scheduler:
+    build: ./scheduler
+    depends_on:
+      - mongo
+      - rabbitmq
+    networks:
+      - app-net
+    env_file:
+      - .env
+    environment:
+      MONGO_URI: "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/"
+      DB_NAME: "ipa2025_db"
 volumes:
   mongo-data:
 
