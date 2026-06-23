@@ -108,6 +108,41 @@ docker compose up -d --build
 
 ---
 
+## ⚙️ การตั้งค่าฝั่ง Cisco Router (Router Configuration)
+
+เพื่อให้ตัว Worker สามารถ SSH เข้าไปดึงข้อมูลเราเตอร์ได้สำเร็จผ่านไลบรารี Netmiko อุปกรณ์ Cisco Router ของคุณจำเป็นต้องตั้งค่าระบบพื้นฐานดังต่อไปนี้:
+
+1. **ตั้งค่า Hostname และ Domain Name** (จำเป็นสำหรับการสร้าง SSH Key):
+   ```ios
+   Router(config)# hostname Router
+   Router(config)# ip domain-name local.domain
+   ```
+
+2. **เปิดการใช้งาน SSH Service** (แนะนำเป็น SSH Version 2):
+   ```ios
+   # สร้างคีย์ RSA สำหรับการเข้ารหัส (ควรเลือกขนาด 1024 ขึ้นไป)
+   Router(config)# crypto key generate rsa modulus 1024
+   
+   # บังคับใช้ SSH Version 2
+   Router(config)# ip ssh version 2
+   ```
+
+3. **สร้างบัญชีผู้ใช้งานที่มีสิทธิ์ระดับ Privilege 15**:
+   > [!IMPORTANT]
+   > เนื่องจากตัวแอปพลิเคชันฝั่ง Worker มีการเรียกใช้ฟังก์ชัน `conn.enable()` โดยที่ไม่ได้ส่งค่า `secret` (Enable Password) เพิ่มเติมในโค้ด ดังนั้นบัญชีผู้ใช้ที่นำมาลงทะเบียน**ต้องมีสิทธิ์ระดับ Privilege 15** เพื่อเข้าสู่โหมด Enable ได้ทันทีที่ล็อกอินสำเร็จ
+   ```ios
+   Router(config)# username <your_username> privilege 15 secret <your_password>
+   ```
+
+4. **เปิดการอนุญาตให้เชื่อมต่อผ่าน SSH บนช่องทาง VTY**:
+   ```ios
+   Router(config)# line vty 0 4
+   Router(config-line)# login local
+   Router(config-line)# transport input ssh
+   ```
+
+---
+
 ## 🛠️ รายละเอียดคำสั่งที่นำมาใช้งานในการดึงข้อมูลเราเตอร์
 สคริปต์ของ Worker จะเข้าเราเตอร์แล้วส่งคำสั่ง:
 ```ios
@@ -131,4 +166,3 @@ show ip interface brief
 ]
 ```
 ซึ่งจะทำให้หน้าเว็บสามารถแสดงประวัติและสถานะการเชื่อมต่อได้อย่างสวยงามและถูกต้อง
-
